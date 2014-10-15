@@ -1,4 +1,4 @@
-#require 'gir_ffi-gtk3'
+require 'tessellator/version'
 require 'spinny'
 require 'cairo'
 require 'pango'
@@ -7,6 +7,8 @@ require 'observer'
 require 'tessellator/monkeypatches'
 
 class Tessellator::WebView
+  require 'tessellator/web_view/fetcher'
+
   include Observable
 
   attr_reader :history, :history_index, :location, :surface
@@ -26,7 +28,7 @@ class Tessellator::WebView
 
     @location = url
 
-    render_page(url)
+    render_page('GET', url)
   end
 
   def reload
@@ -61,15 +63,13 @@ class Tessellator::WebView
   end
 
   private
-  def render_page(url)
+  def render_page(method, url, parameters=default)
     if url.nil?
-      $stderr.puts "WARNING: render_page() called with nil. Possible bug?"
+      $stderr.puts "WARNING: render_page() called with nil url. Possible bug?"
       return
     end
 
-    puts "Render: #{url}"
-
-    render(url)
+    render(method, url, parameters)
   end
 
 def make_layout(cr, text)
@@ -80,7 +80,13 @@ def make_layout(cr, text)
   layout
 end
 
-def render(text)
+def render(method, url, parameters)
+  request = Request.new(method, url, parameters)
+
+  text = request.to_s.scan(/<title>(.*)<\/title>/i).flatten.first
+
+  $stderr.puts "[render]"
+
   cr = Cairo::Context.new(@surface)
 
   cr.set_source_color(:white)
