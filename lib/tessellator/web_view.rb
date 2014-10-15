@@ -75,7 +75,7 @@ class Tessellator::WebView
 def make_layout(cr, text)
   layout = cr.create_pango_layout
   layout.text = text
-  layout.font_description = Pango::FontDescription.new("Serif 36")
+  layout.font_description = Pango::FontDescription.new("Serif 20")
   cr.update_pango_layout(layout)
   layout
 end
@@ -92,11 +92,8 @@ def render(method, url, parameters)
   cr.set_source_color(:white)
   cr.paint
 
-  cr.set_source_color(:red)
-  cr.move_to(25, 350)
-  cr.line_to(150, 375)
-  cr.curve_to(275, 400, 450, 350, 450, 200)
-  cr.curve_to(450, 0, 300, 150, 50, 50)
+  cr.move_to(10, 50)
+  cr.line_to(450, 50)
   cr.stroke_preserve
   path = cr.copy_path_flat
 
@@ -106,9 +103,8 @@ def render(method, url, parameters)
   cr.pango_layout_line_path(layout.get_line(0))
   cr.map_path_onto(path)
 
-  cr.set_source_rgba([0.3, 0.3, 1.0, 0.3])
+  cr.set_source_rgba([0, 0, 0, 1])
   cr.fill_preserve
-  cr.set_source_rgba([0.1, 0.1, 0.1])
   cr.stroke
 
   cr.show_page
