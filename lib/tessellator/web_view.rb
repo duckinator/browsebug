@@ -24,7 +24,7 @@ class Tessellator::WebView
     # Append url to @history and truncate.
     @history[@history_index..-1] = [url]
 
-    go(0)
+    @location = url
 
     render_page(url)
   end
@@ -72,13 +72,6 @@ class Tessellator::WebView
     render(url)
   end
 
-
-
-def render_background(cr)
-  cr.set_source_color(:white)
-  cr.paint
-end
-
 def make_layout(cr, text)
   layout = cr.create_pango_layout
   layout.text = text
@@ -90,7 +83,8 @@ end
 def render(text)
   cr = Cairo::Context.new(@surface)
 
-  render_background(cr)
+  cr.set_source_color(:white)
+  cr.paint
 
   cr.set_source_color(:red)
   cr.move_to(25, 350)

@@ -4,6 +4,14 @@ require 'tessellator'
 require 'gtk3'
 #require 'gir_ffi-gtk3'
 
+class Gtk::Widget
+  def observe(other, &block)
+    define_singleton_method(:update, &block)
+
+    other.add_observer(self)
+  end
+end
+
 class Tessellator::GtkClient
   def initialize
     Gtk.init
@@ -12,20 +20,24 @@ class Tessellator::GtkClient
     vbox = Gtk::VBox.new(false, 2)
     hbox = Gtk::HBox.new(false, 2)
 
-    @wv = Tessellator::WebView.new
+    @wv = wv = Tessellator::WebView.new
 
     textbox = Gtk::Entry.new
     textbox.placeholder_text = 'http://example.com'
     textbox.activates_default = true
+    textbox.observe(wv) {|wv| self.text = wv.location }
 
     back_btn    = button('〈') { wv.go_back }
+    #back_btn.observe(wv) {|wv| self.enabled = wv.can_go_back }
+
     forward_btn = button('〉') { wv.go_forward }
+    #back_btn.observe(wv) {|wv| self.enabled = wv.can_go_back }
+
     reload_btn  = button('↻') { wv.reload }
     load_btn    = button('→') { wv.open(textbox.text) }
 
-    @wv.open('about:blank')
-    @image = Gtk::Image.new
-    #p @image.methods.grep /pixbuf/
+    image = Gtk::Image.new
+    image.observe(wv) {|wv| self.surface = wv.surface }
 
     hbox.add(back_btn)
     hbox.add(forward_btn)
@@ -35,21 +47,15 @@ class Tessellator::GtkClient
 
     vbox.add(hbox)
 
-    vbox.add(@image)
+    vbox.add(image)
 
     win.add(vbox)
     win.show_all
 
-    @wv.add_observer(self)
-
-    @wv.open('https://www.google.com')
+    wv.open('https://www.google.com')
 
     trap(:INT) { Gtk.main_quit }
     win.signal_connect('destroy') { Gtk.main_quit }
-  end
-
-  def update(wv)
-    @image.surface= wv.surface
   end
 
   def button(label, &block)
