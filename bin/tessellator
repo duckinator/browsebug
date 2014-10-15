@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+
+require 'tessellator'
+require 'gtk3'
+#require 'gir_ffi-gtk3'
+
+class Tessellator::GtkClient
+  def initialize
+    Gtk.init
+
+    win  = Gtk::Window.new :toplevel
+    vbox = Gtk::VBox.new(false, 2)
+    hbox = Gtk::HBox.new(false, 2)
+
+    @wv = Tessellator::WebView.new
+
+    textbox = Gtk::Entry.new
+    textbox.placeholder_text = 'http://example.com'
+    textbox.activates_default = true
+
+    back_btn    = button('〈') { wv.go_back }
+    forward_btn = button('〉') { wv.go_forward }
+    reload_btn  = button('↻') { wv.reload }
+    load_btn    = button('→') { wv.open(textbox.text) }
+
+    @wv.open('about:blank')
+    @image = Gtk::Image.new
+    #p @image.methods.grep /pixbuf/
+
+    hbox.add(back_btn)
+    hbox.add(forward_btn)
+    hbox.add(textbox)
+    hbox.add(reload_btn)
+    hbox.add(load_btn)
+
+    vbox.add(hbox)
+
+    vbox.add(@image)
+
+    win.add(vbox)
+    win.show_all
+
+    @wv.add_observer(self)
+
+    @wv.open('https://www.google.com')
+
+    trap(:INT) { Gtk.main_quit }
+    win.signal_connect('destroy') { Gtk.main_quit }
+  end
+
+  def update(wv)
+    @image.surface= wv.surface
+  end
+
+  def button(label, &block)
+    ret = Gtk::Button.new
+
+    ret.label = label if label
+
+    ret.signal_connect('clicked', &block) if block
+
+    ret
+  end
+end
+
+client = Tessellator::GtkClient.new
+
+Gtk.main
