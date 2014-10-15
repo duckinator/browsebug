@@ -83,7 +83,7 @@ end
 def render(method, url, parameters)
   request = Request.new(method, url, parameters)
 
-  text = request.to_s.scan(/<title>(.*)<\/title>/i).flatten.first
+  text = request.to_s.scan(/<title>(.*)<\/title>/i).flatten.first || request.to_s
 
   $stderr.puts "[render]"
 
