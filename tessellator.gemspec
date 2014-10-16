@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "gtk3",  "~> 2.2.2"
   spec.add_runtime_dependency "httparty"
   spec.add_runtime_dependency "nokogiri"
+  spec.add_runtime_dependency "mime-types"
 
   #spec.add_runtime_dependency "cairo-gobject", "~> 2.2.2"
   #spec.add_runtime_dependency "gir_ffi-gtk"

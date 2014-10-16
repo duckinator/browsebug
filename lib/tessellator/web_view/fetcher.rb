@@ -1,16 +1,14 @@
 require 'tessellator/version'
-require 'tessellator/user_agent'
-require 'tessellator/web_view/html_parser'
+require 'tessellator/web_view/parser'
 require 'spinny'
 require 'httparty'
 require 'nokogiri'
 
-class Tessellator::WebView::Request
+class Tessellator::WebView::Fetcher
   include HTTParty
-  parser Tessellator::WebView::HTMLParser
 
   class << self
-    def new(method, url, parameters=default)
+    def fetch(method, url, parameters=default)
       method = normalize_method(method)
 
       if method == :get && parameters.default?

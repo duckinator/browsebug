@@ -52,6 +52,8 @@ class Tessellator::GtkClient
     win.add(vbox)
     win.show_all
 
+    win.observe(wv) {|wv| self.title = wv.title }
+
     wv.open('https://www.google.com')
 
     trap(:INT) { Gtk.main_quit }

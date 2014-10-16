@@ -4,20 +4,29 @@ require 'cairo'
 require 'pango'
 require 'observer'
 
-require 'tessellator/monkeypatches'
+require 'tessellator/kludges'
 
 class Tessellator::WebView
   require 'tessellator/web_view/fetcher'
 
   include Observable
 
-  attr_reader :history, :history_index, :location, :surface
+  attr_reader :history, :history_index, :location, :surface, :title
 
   def initialize(width=500, height=500)
     @history = []
     @history_index = 0
 
+    title = nil
+
     @surface = Cairo::ImageSurface.new(width, height)
+  end
+
+  def set_title(title)
+    @title = Tessellator::BROWSER_NAME
+    @title = "#{title} — #{@title}" if title
+
+    p @title
   end
 
   def open(url)
@@ -69,7 +78,10 @@ class Tessellator::WebView
       return
     end
 
-    render(method, url, parameters)
+    response = Fetcher.fetch(method, url, parameters)
+    parsed   = Parser.parse(method, url, parameters, response)
+
+    render(parsed)
   end
 
 def make_layout(cr, text)
@@ -80,10 +92,15 @@ def make_layout(cr, text)
   layout
 end
 
-def render(method, url, parameters)
-  request = Request.new(method, url, parameters)
+def render(parsed)
+  set_title parsed.title
 
-  text = request.to_s.scan(/<title>(.*)<\/title>/i).flatten.first || request.to_s
+  doc = (parsed.error || parsed.document)
+
+  head = doc.xpath '//head'
+  body = doc.xpath '//body'
+
+  text = body.to_s
 
   $stderr.puts "[render]"
 
