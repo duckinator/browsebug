@@ -22,6 +22,10 @@ Or install it yourself as:
 
 TODO: Write usage instructions here
 
+## Screenshots
+
+![Screenshot](assets/screenshot.png)
+
 ## Contributing
 
 1. Fork it ( https://gitlab.com/duckinator/tessellator/fork )
