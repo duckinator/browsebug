@@ -45,8 +45,6 @@ class Tessellator::WebView::Parser
 
     # TODO: Be a little bit more robust, possibly?
     mime_type = MIME::Types[headers['content-type']].first
-    p mime_type
-    p response.headers
 
     @method = MIME_MAPPING[+mime_type.maybe.simplified || :default]
   end
@@ -62,7 +60,10 @@ class Tessellator::WebView::Parser
   end
 
   def text(response)
-    html("<pre>#{response.body}</pre>")
+    response = response.dup
+    response.body = "<pre>#{response.body}</pre>"
+
+    html(response)
   end
 
   def html(response)

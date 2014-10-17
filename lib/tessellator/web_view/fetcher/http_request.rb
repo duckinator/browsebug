@@ -41,7 +41,6 @@ class Tessellator::WebView::Fetcher
           request = Net::HTTP::Get.new uri
 
           response = http.request request
-          p response.methods - Object.new.methods
 
           response
         end
