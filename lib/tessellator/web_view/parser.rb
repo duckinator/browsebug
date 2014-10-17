@@ -1,35 +1,11 @@
 require 'tessellator/version'
-require 'httparty'
+require 'spinny'
+require 'mayhaps'
 require 'mime-types'
+require 'tessellator/web_view/fetcher/http_response'
 
 class Tessellator::WebView::Parser
-  class Parsed
-    attr_accessor :error, :document, :css, :title
-
-    def initialize(can_render: true, error: false, title: nil, document:, css: nil)
-      @can_render = can_render
-      @error = error
-      @document  = document
-      @css   = css
-
-      @title =
-        if title
-          title
-        elsif document.respond_to?(:title) && document.title
-          document.title
-        else
-          nil
-        end
-    end
-
-    def renderable?
-      @can_render
-    end
-
-    def error?
-      !!@error
-    end
-  end
+  require 'tessellator/web_view/parser/parsed'
 
   MIME_MAPPING = {
     # Text-based files.
@@ -59,7 +35,7 @@ class Tessellator::WebView::Parser
     #'image/png'         => :png,
     #'image/svg+xml'     => :svg,
 
-    # Defaults
+    # Default.
     :default => :octet_stream,
   }
 
@@ -72,7 +48,7 @@ class Tessellator::WebView::Parser
     p mime_type
     p response.headers
 
-    @method = MIME_MAPPING[mime_type.simplified]
+    @method = MIME_MAPPING[+mime_type.maybe.simplified || :default]
   end
 
   def self.parse(*args)
@@ -80,7 +56,7 @@ class Tessellator::WebView::Parser
   end
 
   def parse!
-    $stderr.puts "[Parser##{@method}]"
+    debug_print_call
 
     send(@method, @response)
   end
@@ -98,6 +74,6 @@ class Tessellator::WebView::Parser
   end
 
   def octet_stream(response)
-    Parsed.new(error: text("Parser#octet_stream: No idea how to handle downloads."), document: nil)
+    Parsed.new(error: Nokogiri::HTML("<p>Parser#octet_stream: No idea how to handle downloads.</p>"), document: nil)
   end
 end

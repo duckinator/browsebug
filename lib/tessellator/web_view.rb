@@ -25,8 +25,6 @@ class Tessellator::WebView
   def set_title(title)
     @title = Tessellator::BROWSER_NAME
     @title = "#{title} — #{@title}" if title
-
-    p @title
   end
 
   def open(url)
@@ -93,6 +91,8 @@ def make_layout(cr, text)
 end
 
 def render(parsed)
+  debug_print_call
+
   set_title parsed.title
 
   doc = (parsed.error || parsed.document)
@@ -101,8 +101,6 @@ def render(parsed)
   body = doc.xpath '//body'
 
   text = body.to_s
-
-  $stderr.puts "[render]"
 
   cr = Cairo::Context.new(@surface)
 

@@ -3,6 +3,24 @@
 require 'tessellator'
 require 'gtk3'
 #require 'gir_ffi-gtk3'
+require 'optparse'
+
+options = {
+  url: 'https://www.google.com',
+  debug: false,
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: tessellator [options]"
+
+  opts.on("-d", "--[no-]debug", "Run in debug mode") do |v|
+    options[:debug] = v
+  end
+end.parse!
+
+options[:url] = ARGV.delete_at(0) if ARGV.length == 1
+
+Tessellator.debug = options[:debug]
 
 class Gtk::Widget
   def observe(other, &block)
@@ -13,7 +31,7 @@ class Gtk::Widget
 end
 
 class Tessellator::GtkClient
-  def initialize
+  def initialize(url)
     Gtk.init
 
     win  = Gtk::Window.new :toplevel
@@ -54,7 +72,7 @@ class Tessellator::GtkClient
 
     win.observe(wv) {|wv| self.title = wv.title }
 
-    wv.open('https://www.google.com')
+    wv.open(url)
 
     trap(:INT) { Gtk.main_quit }
     win.signal_connect('destroy') { Gtk.main_quit }
@@ -71,6 +89,6 @@ class Tessellator::GtkClient
   end
 end
 
-client = Tessellator::GtkClient.new
+Tessellator::GtkClient.new(options[:url])
 
 Gtk.main
