@@ -39,6 +39,7 @@ class Tessellator::WebView::Fetcher
       def send_request(method, uri, parameters, options)
         Net::HTTP.start(uri.host, uri.port, options) do |http|
           request = Net::HTTP::Get.new uri
+          request['User-Agent'] = Tessellator::USER_AGENT
 
           response = http.request request
 
