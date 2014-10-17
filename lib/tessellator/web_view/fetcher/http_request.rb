@@ -8,6 +8,7 @@ class Tessellator::WebView::Fetcher
 
   class HTTPRequest
     MethodError = Class.new(ArgumentError)
+    RedirectLimitError = Class.new(StandardError)
 
     DEFAULT_HEADERS = {
       'User-Agent' => Tessellator::USER_AGENT,
@@ -19,12 +20,7 @@ class Tessellator::WebView::Fetcher
 
     class << self
       def request(method, url, parameters, options={})
-        uri = URI(url)
-
-        options[:use_ssl] = uri.scheme == 'https'
-        options[:ssl_version] = 'TLSv1' if options[:use_ssl]
-
-        HTTPResponse.new(raw: send_request(method, uri, parameters, options))
+        HTTPResponse.new(raw: fetch(method, url, parameters, options))
       end
 
       private
@@ -36,7 +32,17 @@ class Tessellator::WebView::Fetcher
         Net::HTTP.const_get(method.capitalize)
       end
 
-      def send_request(method, uri, parameters, options)
+      def fetch(method, url, parameters, options, limit = Tessellator::HTTP_REDIRECT_LIMIT)
+        # TODO: Actually handle this exception.
+        if limit <= 0
+          raise RedirectLimitError, "request exceeded redirect limit (#{Tessellator::HTTP_REDIRECT_LIMIT})."
+        end
+
+        uri = URI(url)
+
+        options[:use_ssl] = uri.scheme == 'https'
+        options[:ssl_version] = 'TLSv1' if options[:use_ssl]
+
         Net::HTTP.start(uri.host, uri.port, options) do |http|
           request = Net::HTTP::Get.new uri
 
@@ -49,6 +55,24 @@ class Tessellator::WebView::Fetcher
           end
 
           response = http.request request
+
+          if response.is_a?(Net::HTTPRedirection)
+            if Tessellator.debug
+              $stderr.puts "[DEBUG] #{uri} redirects to #{response['location']}."
+            end
+
+            if response['location'].start_with?('/')
+              location = uri.dup
+              location.path = response['location']
+
+              # TODO: Figure out of querystrings are supposed to be passed along
+              #       with redirects. If not, clear them here!
+            else
+              location = response['location']
+            end
+
+            return fetch(method, location.to_s, parameters, options, limit - 1)
+          end
 
           response
         end
