@@ -1,13 +1,13 @@
 require 'tessellator/version'
 require 'spinny'
 require 'cairo'
-require 'pango'
 require 'observer'
 
 require 'tessellator/kludges'
 
 class Tessellator::WebView
   require 'tessellator/web_view/fetcher'
+  require 'tessellator/web_view/renderer'
 
   include Observable
 
@@ -69,6 +69,11 @@ class Tessellator::WebView
     go(+1)
   end
 
+  def update(data)
+    changed(true)
+    notify_observers(self)
+  end
+
   private
   def render_page(method, url, parameters=default)
     if url.nil?
@@ -79,64 +84,12 @@ class Tessellator::WebView
     response = Fetcher.fetch(method, url, parameters)
     parsed   = Parser.parse(method, url, parameters, response)
 
-    render(parsed)
-  end
+    set_title parsed.title
 
-def make_layout(cr, text)
-  layout = cr.create_pango_layout
-  layout.text = text
-  layout.font_description = Pango::FontDescription.new("Serif 20")
-  cr.update_pango_layout(layout)
-  layout
-end
+    renderer = Renderer.new(surface)
+    renderer.add_observer(self)
 
-def render(parsed)
-  debug_print_call
-
-  set_title parsed.title
-
-  doc = (parsed.error || parsed.document)
-
-  head = doc.xpath '//head'
-  body = doc.xpath '//body'
-
-  text = body.to_s
-
-  cr = Cairo::Context.new(@surface)
-
-  cr.set_source_color(:white)
-  cr.paint
-
-  cr.move_to(10, 50)
-  cr.line_to(450, 50)
-  cr.stroke_preserve
-  path = cr.copy_path_flat
-
-  cr.line_width = 1
-  cr.new_path
-  layout = make_layout(cr, text)
-  cr.pango_layout_line_path(layout.get_line(0))
-  cr.map_path_onto(path)
-
-  cr.set_source_rgba([0, 0, 0, 1])
-  cr.fill_preserve
-  cr.stroke
-
-  cr.show_page
-
-  changed(true)
-  notify_observers(self)
-end
-
-end
-
-
-def output
-  Cairo::ImageSurface.new(500, 500) do |surface|
-    render(surface)
-    surface.write_to_png("text-on-path.png")
+    renderer.render(parsed)
   end
 end
-
-#output
 
