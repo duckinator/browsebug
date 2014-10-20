@@ -55,13 +55,14 @@ class Tessellator::WebView::Fetcher
           raise ArgumentError, "expected data URI, got #{scheme} URI"
         end
 
+        data = URI.decode(data)
         data = Base64.decode64(data) if base64
 
         headers = {
-          'content_type' => "#{mime_type}"
+          'content-type' => "#{mime_type}"
         }
 
-        headers['content_type'] += "; charset=#{charset}" if charset
+        headers['content-type'] += "; charset=#{charset}" if charset
 
         HTTPResponse.new(body: data, headers: headers, raw: nil, url: url)
       end
