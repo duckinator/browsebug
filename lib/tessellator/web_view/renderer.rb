@@ -30,4 +30,8 @@ class Tessellator::WebView::Renderer
     changed(true)
     notify_observers(self)
   end
+
+  def inspect
+    "#<#{self.class.name} surface=#{@surface.inspect}>"
+  end
 end

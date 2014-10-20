@@ -70,7 +70,10 @@ class Tessellator::GtkClient
     win.add(vbox)
     win.show_all
 
-    win.observe(wv) {|wv| self.title = wv.title }
+    win.observe(wv) do |wv|
+      self.title = wv.title
+      textbox.text = wv.location
+    end
 
     wv.open(url)
 

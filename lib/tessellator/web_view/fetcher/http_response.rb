@@ -4,8 +4,8 @@ require 'uri'
 require 'net/https'
 
 class Tessellator::WebView::Fetcher
-  class HTTPResponse < Struct.new(:body, :headers, :raw)
-    def initialize(body: default, headers: default, raw:)
+  class HTTPResponse < Struct.new(:body, :headers, :url)
+    def initialize(body: default, headers: default, raw:, url:)
       default_for(:headers) { raw.to_hash }
       default_for(:body)    { raw.body    }
 
@@ -20,7 +20,7 @@ class Tessellator::WebView::Fetcher
         end
       end
 
-      super(body, headers, raw)
+      super(body, headers, url)
     end
   end
 end

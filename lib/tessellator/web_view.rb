@@ -46,7 +46,7 @@ class Tessellator::WebView
     @history_index > 0
   end
 
-  def  can_go_forward
+  def can_go_forward
     @history_index < @history.length
   end
 
@@ -82,6 +82,8 @@ class Tessellator::WebView
     end
 
     response = Fetcher.fetch(method, url, parameters)
+    @location = response.url
+
     parsed   = Parser.parse(method, url, parameters, response)
 
     set_title parsed.title
