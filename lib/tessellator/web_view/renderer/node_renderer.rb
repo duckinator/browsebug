@@ -8,6 +8,10 @@ class Tessellator::WebView::Renderer::NodeRenderer < Struct.new(:surface, :conte
   require 'tessellator/web_view/renderer/node'
 
   ELEMENT_MAP = {
+    'html'  => :html,
+
+    'head'  => :invisible, # FIXME: Hack.
+
     'img'   => :image,
     'a'     => :anchor,
     'span'  => :inline,
@@ -34,7 +38,7 @@ class Tessellator::WebView::Renderer::NodeRenderer < Struct.new(:surface, :conte
     stylesheets = [] # ????
 
     puts "#{element_class(element).name}(..., ..., element, ...)"
-    el = element_class(element).new(surface, context, element, stylesheets)
+    el = element_class(element).new(surface, context, element, stylesheets, self)
     el.render_at(x, y, width, height)
   end
 
