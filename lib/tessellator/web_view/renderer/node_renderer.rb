@@ -24,41 +24,18 @@ class Tessellator::WebView::Renderer::NodeRenderer < Struct.new(:surface, :conte
     require "tessellator/web_view/renderer/node/#{type.to_s}"
   end
 
-  def render(element)
+  def render_document(document)
+    dtd, root_element = document.children
+
+    render(root_element, 0, 0, surface.width, surface.height)
+  end
+
+  def render(element, x, y, width, height)
     stylesheets = [] # ????
 
     puts "#{element_class(element).name}(..., ..., element, ...)"
-    element_class(element).new(surface, context, element, stylesheets)
-  end
-
-  def self.on(name, &block)
-    define_method(name) do |element, stylesheets=[]|
-      Element.new(
-        surface: @surface,
-        context: @context,
-        element: element,
-        stylesheets: stylesheets).render(&block)
-    end
-  end
-
-  on(:document) do
-    context.set_source_color(:white)
-    context.paint
-
-    context.move_to(10, 50)
-    context.line_to(450, 50)
-    context.stroke_preserve
-    path = context.copy_path_flat
-
-    context.line_width = 1
-    context.new_path
-    layout = make_layout(element.to_s)
-    context.pango_layout_line_path(layout.get_line(0))
-    context.map_path_onto(path)
-
-    context.set_source_rgba([0, 0, 0, 1])
-    context.fill_preserve
-    context.stroke
+    el = element_class(element).new(surface, context, element, stylesheets)
+    el.render_at(x, y, width, height)
   end
 
   private
@@ -66,7 +43,7 @@ class Tessellator::WebView::Renderer::NodeRenderer < Struct.new(:surface, :conte
     name = snake_to_camel(element_class_name(element.name))
 
     node = Tessellator::WebView::Renderer::Node
-p node
+
     if name.empty? || !node.const_defined?(name)
       $stderr.puts "WARNING: Defaulting to generic block element for `#{element.name}'."
       name = :Block

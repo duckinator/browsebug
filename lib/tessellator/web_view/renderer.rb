@@ -20,7 +20,7 @@ class Tessellator::WebView::Renderer
 
     doc = (parsed.error || parsed.document)
 
-    @elements.render(doc)
+    @elements.render_document(doc)
 
 #    head = doc.xpath '//head'
 #    body = doc.xpath '//body'
