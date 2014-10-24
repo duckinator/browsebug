@@ -5,14 +5,14 @@ require 'pango'
 require 'observer'
 
 class Tessellator::WebView::Renderer
-  require 'tessellator/web_view/renderer/element_renderer'
+  require 'tessellator/web_view/renderer/node_renderer'
 
   include Observable
 
   def initialize(surface)
     @surface  = surface
     @context  = Cairo::Context.new(surface)
-    @elements = ElementRenderer.new(surface, @context)
+    @elements = NodeRenderer.new(surface, @context)
   end
 
   def render(parsed)
