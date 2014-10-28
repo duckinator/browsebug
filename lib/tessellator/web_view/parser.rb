@@ -1,10 +1,13 @@
 require 'tessellator/version'
+require 'tessellator/debug'
 require 'spinny'
 require 'mayhaps'
 require 'mime-types'
 require 'tessellator/web_view/fetcher/http_response'
 
 class Tessellator::WebView::Parser
+  include Tessellator::Debug
+
   require 'tessellator/web_view/parser/parsed'
 
   MIME_MAPPING = {
