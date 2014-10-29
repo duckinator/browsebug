@@ -98,7 +98,7 @@ class Tessellator::WebView::Fetcher
             return fetch(method, location.to_s, parameters, options, limit - 1)
           end
 
-          Response.new(raw.body, raw.maybe.to_hash, uri.to_s)
+          Response.new(response.body, +response.maybe.to_hash, uri.to_s)
         end
       end
     end
