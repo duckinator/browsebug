@@ -15,7 +15,7 @@ class Tessellator::WebView::Fetcher
         }
 
         if body
-          Response.new(body.format(data), {'content-type' => 'text/html'}, data['url'])
+          Response.new(body.format(data), {'content-type' => 'text/html'}, data[:url])
         else
           request('GET', 'errors:404', {}, {'url-override' => url})
         end
