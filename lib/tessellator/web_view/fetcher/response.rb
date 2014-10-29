@@ -1,14 +1,9 @@
 require 'tessellator/version'
 require 'spinny'
-require 'uri'
-require 'net/https'
 
 class Tessellator::WebView::Fetcher
-  class HTTPResponse < Struct.new(:body, :headers, :url)
-    def initialize(body: default, headers: default, raw:, url:)
-      default_for(:headers) { raw.to_hash }
-      default_for(:body)    { raw.body    }
-
+  class Response < Struct.new(:body, :headers, :url)
+    def initialize(body, headers, url)
       class << headers
         alias_method :old_fetch, :[]
         def [](key)

@@ -5,7 +5,7 @@ require 'net/https'
 require 'base64'
 
 class Tessellator::WebView::Fetcher
-  require 'tessellator/web_view/fetcher/http_response'
+  require 'tessellator/web_view/fetcher/response'
 
   class HTTPRequest
     MethodError = Class.new(ArgumentError)
@@ -33,19 +33,6 @@ class Tessellator::WebView::Fetcher
         Net::HTTP.const_get(method.capitalize)
       end
 
-      # TODO: Make this less horrifying.
-      def sanitized_uri(url)
-        old_url ||= nil
-        URI(url)
-      rescue URI::InvalidURIError => e
-        raise e if old_url
-
-        old_url = url
-        url = URI.encode(url)
-
-        retry
-      end
-
       def data_uri(url)
         if url =~ /^([^:]+):([^;,]+)(;charset=[^;,]+)?(;base64)?,(.*)$/
           scheme, mime_type, charset, base64, data = $1, $2, $3, $4, $5
@@ -64,7 +51,7 @@ class Tessellator::WebView::Fetcher
 
         headers['content-type'] += "; charset=#{charset}" if charset
 
-        HTTPResponse.new(body: data, headers: headers, raw: nil, url: url)
+        Response.new(data, headers, url)
       end
 
       def fetch(method, url, parameters, options, limit = Tessellator::HTTP_REDIRECT_LIMIT)
@@ -73,7 +60,7 @@ class Tessellator::WebView::Fetcher
           raise RedirectLimitError, "request exceeded redirect limit (#{Tessellator::HTTP_REDIRECT_LIMIT})."
         end
 
-        uri = sanitized_uri(url)
+        uri = Tessellator::Utilities.sanitized_uri(url)
 
         return data_uri(uri.to_s) if uri.scheme == 'data'
 
@@ -111,7 +98,7 @@ class Tessellator::WebView::Fetcher
             return fetch(method, location.to_s, parameters, options, limit - 1)
           end
 
-          HTTPResponse.new(raw: response, url: uri.to_s)
+          Response.new(raw.body, raw.maybe.to_hash, uri.to_s)
         end
       end
     end
