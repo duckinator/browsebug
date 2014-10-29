@@ -60,7 +60,7 @@ class Tessellator::WebView::Fetcher
           raise RedirectLimitError, "request exceeded redirect limit (#{Tessellator::HTTP_REDIRECT_LIMIT})."
         end
 
-        uri = Tessellator::Utilities.sanitized_uri(url)
+        uri = Tessellator::Utilities.safe_uri(url)
 
         return data_uri(uri.to_s) if uri.scheme == 'data'
 

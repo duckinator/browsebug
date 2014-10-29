@@ -22,7 +22,7 @@ class Tessellator::WebView::Fetcher
     def fetch(method, url, parameters={})
       debug_print_call
 
-      uri = Tessellator::Utilities.sanitized_uri(url)
+      uri = Tessellator::Utilities.safe_uri(url)
 
       case uri.scheme
       when *INTERNAL_SCHEMES

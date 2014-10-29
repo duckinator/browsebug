@@ -5,7 +5,7 @@ class Tessellator::WebView::Fetcher
   class InternalRequest
     class << self
       def request(method, url, parameters, options={})
-        uri  = Tessellator::Utilities.sanitized_uri(url)
+        uri  = Tessellator::Utilities.safe_uri(url)
         body = fetch_file(uri)
 
         data = {

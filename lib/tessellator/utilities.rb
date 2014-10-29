@@ -2,7 +2,7 @@ module Tessellator
   module Utilities
     class << self
       # TODO: Make this less horrifying.
-      def sanitized_uri(url)
+      def safe_uri(url)
         old_url ||= nil
         URI(url)
       rescue URI::InvalidURIError => e
