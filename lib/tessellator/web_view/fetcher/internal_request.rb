@@ -9,7 +9,7 @@ class Tessellator::WebView::Fetcher
         body = fetch_file(uri)
 
         data = {
-          url:         options['url-override'] || url,
+          url:         options[:url_override] || url,
           version:     Tessellator::VERSION,
           user_agent: Tessellator::USER_AGENT,
         }
@@ -17,7 +17,7 @@ class Tessellator::WebView::Fetcher
         if body
           Response.new(body.format(data), {'content-type' => 'text/html'}, data[:url])
         else
-          request('GET', 'errors:404', {}, {'url-override' => url})
+          request('GET', 'errors:404', {}, {url_override: url})
         end
       end
 
