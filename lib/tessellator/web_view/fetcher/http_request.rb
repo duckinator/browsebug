@@ -3,7 +3,6 @@ require 'spinny'
 require 'uri'
 require 'openssl/better_defaults'
 require 'net/https'
-require 'base64'
 
 class Tessellator::WebView::Fetcher
   require 'tessellator/web_view/fetcher/response'
@@ -34,27 +33,6 @@ class Tessellator::WebView::Fetcher
         Net::HTTP.const_get(method.capitalize)
       end
 
-      def data_uri(url)
-        if url =~ /^([^:]+):([^;,]+)(;charset=[^;,]+)?(;base64)?,(.*)$/
-          scheme, mime_type, charset, base64, data = $1, $2, $3, $4, $5
-        end
-
-        unless scheme == 'data'
-          raise ArgumentError, "expected data URI, got #{scheme} URI"
-        end
-
-        data = URI.decode(data)
-        data = Base64.decode64(data) if base64
-
-        headers = {
-          'content-type' => "#{mime_type}"
-        }
-
-        headers['content-type'] += "; charset=#{charset}" if charset
-
-        Response.new(data, headers, url)
-      end
-
       def fetch(method, url, parameters, options, limit = Tessellator::HTTP_REDIRECT_LIMIT)
         # TODO: Actually handle this exception.
         if limit <= 0
@@ -62,8 +40,6 @@ class Tessellator::WebView::Fetcher
         end
 
         uri = Tessellator::Utilities.safe_uri(url)
-
-        return data_uri(uri.to_s) if uri.scheme == 'data'
 
         options[:use_ssl] = uri.scheme == 'https'
 

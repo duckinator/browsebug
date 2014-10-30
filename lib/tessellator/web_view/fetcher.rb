@@ -8,6 +8,7 @@ require 'nokogiri'
 class Tessellator::WebView::Fetcher
   require 'tessellator/web_view/fetcher/http_request'
   require 'tessellator/web_view/fetcher/internal_request'
+  require 'tessellator/web_view/fetcher/data_request'
 
   INTERNAL_SCHEMES = %w[about]
   FILE_SCHEMES     = %w[file]
@@ -25,8 +26,10 @@ class Tessellator::WebView::Fetcher
       case uri.scheme
       when *INTERNAL_SCHEMES
         InternalRequest.request(method, url, parameters)
-      when *HTTP_SCHEMES, *DATA_SCHEMES # FIXME: Pull out data: URIs. (tessellator#1)
+      when *HTTP_SCHEMES
         HTTPRequest.request(method, url, parameters)
+      when *DATA_SCHEMES
+        DataRequest.request(method, url, parameters)
       when *FILE_SCHEMES
         # FIXME: Make file:// URLs work. (tessellator#1)
         raise NotImplementedError, "No idea how to handle file:// URLs."
