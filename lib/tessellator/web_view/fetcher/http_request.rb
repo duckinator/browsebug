@@ -1,6 +1,7 @@
 require 'tessellator/version'
 require 'spinny'
 require 'uri'
+require 'openssl/better_defaults'
 require 'net/https'
 require 'base64'
 
@@ -65,7 +66,6 @@ class Tessellator::WebView::Fetcher
         return data_uri(uri.to_s) if uri.scheme == 'data'
 
         options[:use_ssl] = uri.scheme == 'https'
-        options[:ssl_version] = 'TLSv1' if options[:use_ssl]
 
         Net::HTTP.start(uri.host, uri.port, options) do |http|
           request = Net::HTTP::Get.new uri
