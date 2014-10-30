@@ -27,10 +27,10 @@ class Tessellator::WebView::Fetcher
       case uri.scheme
       when *INTERNAL_SCHEMES
         InternalRequest.request(method, url, parameters)
-      when *HTTP_SCHEMES, *DATA_SCHEMES # FIXME: Pull out data: URIs.
+      when *HTTP_SCHEMES, *DATA_SCHEMES # FIXME: Pull out data: URIs. (tessellator#1)
         HTTPRequest.request(method, url, parameters)
       when *FILE_SCHEMES
-        # FIXME: Make file:// URLs work.
+        # FIXME: Make file:// URLs work. (tessellator#1)
         raise NotImplementedError, "No idea how to handle file:// URLs."
       end
     end
