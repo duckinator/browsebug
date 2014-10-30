@@ -36,9 +36,6 @@ class Tessellator::WebView::Parser
     #'image/pjpeg'       => :jpeg,
     #'image/png'         => :png,
     #'image/svg+xml'     => :svg,
-
-    # Default.
-    :default => :octet_stream,
   }
 
   def initialize(method, url, parameters, response)
@@ -48,7 +45,8 @@ class Tessellator::WebView::Parser
     # TODO: Be a little bit more robust, possibly?
     mime_type = MIME::Types[headers['content-type']].first
 
-    @method = MIME_MAPPING[+mime_type.maybe.simplified || :default]
+
+    @method   = MIME_MAPPING[+mime_type.maybe.simplified] || :default
   end
 
   def self.parse(*args)
@@ -78,5 +76,9 @@ class Tessellator::WebView::Parser
 
   def octet_stream(response)
     Parsed.new(error: Nokogiri::HTML("<p>Parser#octet_stream: No idea how to handle downloads.</p>"), document: nil)
+  end
+
+  def default(response)
+    octet_stream(response)
   end
 end
