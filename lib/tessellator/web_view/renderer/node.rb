@@ -14,12 +14,14 @@ class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :ele
     scary_kludgebucket
   end
 
+  # FIXME: Resolve tessellator#4, and then replace Node#scary_kludgebucket.
   def scary_kludgebucket
-    # FIXME: Actually *get* the stylesheets, then fix these shenanigans.
+    # Actually *get* the stylesheets, then fix these shenanigans.
     @display = 'block'
     @display = 'none' if %w[head script style].include?(element.name)
 
-    # FIXME: Once stylesheets are being passed around, set the background *correctly*.
+    # Once stylesheets are being passed around, set the background *correctly*.
+    # Also figure out where this should be actually set.
     if element.name == 'head'
       context.set_source_color(:white)
       context.paint
@@ -90,7 +92,7 @@ class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :ele
   end
 
   def render_at(x, y, width, height)
-    return if @display == 'none' # FIXME: See shenanigans in #__kludgebucket.
+    return if @display == 'none' # FIXME: See shenanigans in #__kludgebucket. (tessellator#4)
 
     element.children.map do |el|
       case el
