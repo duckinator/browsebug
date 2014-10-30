@@ -3,6 +3,7 @@ require 'tessellator/debug'
 require 'spinny'
 require 'mayhaps'
 require 'mime-types'
+require 'pp'
 
 class Tessellator::WebView::Parser
   include Tessellator::Debug
@@ -26,7 +27,7 @@ class Tessellator::WebView::Parser
     #'application/atom+xml' => :atom,
     #'application/rss+xml'  => :rss,
 
-    #'application/json'  => :json,
+    'application/json'  => :json,
     #'application/javascript' => :javascript,
     'application/octet-stream' => :octet_stream,
 
@@ -76,6 +77,13 @@ class Tessellator::WebView::Parser
 
   def octet_stream(response)
     Parsed.new(error: Nokogiri::HTML("<p>Parser#octet_stream: No idea how to handle downloads.</p>"), document: nil)
+  end
+
+  def json(response)
+    response = response.dup
+    response.body = JSON.pretty_unparse(JSON.parse(response.body))
+
+    text(response)
   end
 
   def default(response)
