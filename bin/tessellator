@@ -2,7 +2,6 @@
 
 require 'tessellator'
 require 'gtk3'
-#require 'gir_ffi-gtk3'
 require 'optparse'
 
 options = {
@@ -31,14 +30,14 @@ class Gtk::Widget
 end
 
 class Tessellator::GtkClient
-  def initialize(url)
+  def initialize(options)
     Gtk.init
 
     win  = Gtk::Window.new :toplevel
     vbox = Gtk::VBox.new(false, 2)
     hbox = Gtk::HBox.new(false, 2)
 
-    @wv = wv = Tessellator::WebView.new
+    wv = Tessellator::WebView.new
 
     textbox = Gtk::Entry.new
     textbox.placeholder_text = 'http://example.com'
@@ -75,7 +74,7 @@ class Tessellator::GtkClient
       textbox.text = wv.location
     end
 
-    wv.open(url)
+    wv.open(options[:url])
 
     trap(:INT) { Gtk.main_quit }
     win.signal_connect('destroy') { Gtk.main_quit }
@@ -92,6 +91,6 @@ class Tessellator::GtkClient
   end
 end
 
-Tessellator::GtkClient.new(options[:url])
+Tessellator::GtkClient.new(options)
 
 Gtk.main
