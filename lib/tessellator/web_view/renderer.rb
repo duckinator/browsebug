@@ -18,9 +18,11 @@ class Tessellator::WebView::Renderer
   def render(parsed)
     debug_print_call
 
-    doc = (parsed.error || parsed.document)
+    document = (parsed.error || parsed.document)
 
-    Node.new(@surface, @context, doc, []).render!
+    dtd, root_element = document.children
+
+    Node.new(@surface, @context, document, []).render!
 
 #    head = doc.xpath '//head'
 #    body = doc.xpath '//body'

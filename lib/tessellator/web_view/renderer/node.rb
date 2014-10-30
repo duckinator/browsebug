@@ -29,12 +29,6 @@ class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :ele
   end
   private :scary_kludgebucket
 
-  def self.render_document(document)
-    dtd, root_element = document.children
-
-    render(root_element, 0, 0, surface.width, surface.height)
-  end
-
   def render!
     render_at(x, y, width, height)
   end
