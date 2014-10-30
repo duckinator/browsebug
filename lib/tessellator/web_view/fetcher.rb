@@ -2,9 +2,7 @@ require 'tessellator/version'
 require 'tessellator/debug'
 require 'tessellator/utilities'
 require 'tessellator/web_view/parser'
-#require 'tessellator/web_view/internal_pages'
 require 'spinny'
-require 'httparty'
 require 'nokogiri'
 
 class Tessellator::WebView::Fetcher
