@@ -1,5 +1,4 @@
 require 'tessellator/version'
-require 'spinny'
 require 'uri'
 require 'openssl/better_defaults'
 require 'net/https'

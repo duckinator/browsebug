@@ -1,4 +1,3 @@
-require 'spinny'
 require 'uri'
 
 class Tessellator::WebView::Fetcher

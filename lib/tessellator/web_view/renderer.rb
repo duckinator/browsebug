@@ -1,5 +1,4 @@
 require 'tessellator/version'
-require 'spinny'
 require 'cairo'
 require 'pango'
 require 'observer'

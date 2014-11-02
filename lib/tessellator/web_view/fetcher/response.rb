@@ -1,5 +1,4 @@
 require 'tessellator/version'
-require 'spinny'
 
 class Tessellator::WebView::Fetcher
   class Response < Struct.new(:body, :headers, :url)

@@ -1,6 +1,5 @@
 require 'tessellator/version'
 require 'tessellator/debug'
-require 'spinny'
 require 'mayhaps'
 require 'mime-types'
 require 'pp'

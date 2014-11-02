@@ -1,5 +1,4 @@
 require 'tessellator/debug'
-require 'spinny'
 require 'cairo'
 require 'pango'
 

@@ -1,5 +1,4 @@
 require 'tessellator/version'
-require 'spinny'
 
 module Tessellator
   require 'tessellator/constants'
