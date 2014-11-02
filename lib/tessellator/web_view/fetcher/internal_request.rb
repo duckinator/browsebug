@@ -1,3 +1,4 @@
+require 'spinny' # for String#format.
 require 'uri'
 
 class Tessellator::WebView::Fetcher
