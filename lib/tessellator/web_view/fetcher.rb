@@ -17,10 +17,8 @@ class Tessellator::WebView::Fetcher
   class << self
     include Tessellator::Debug
 
-    def fetch(method, url, parameters=nil)
+    def fetch(method, url, parameters={})
       debug_print_call
-
-      parameters ||= {}
 
       uri = Tessellator::Utilities.safe_uri(url)
 

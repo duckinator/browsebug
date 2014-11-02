@@ -1,4 +1,4 @@
-require 'spinny/utilities'
+require 'spinny'
 
 module Tessellator
   class << self

@@ -74,7 +74,7 @@ class Tessellator::WebView
   end
 
   private
-  def render_page(method, url, parameters=nil)
+  def render_page(method, url, parameters=default)
     if url.nil?
       $stderr.puts "WARNING: render_page() called with nil url. Possible bug?"
       return
