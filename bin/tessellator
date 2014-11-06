@@ -7,6 +7,7 @@ require 'optparse'
 options = {
   url: 'about:version',
   debug: false,
+  exit_after_navigation: false,
 }
 
 OptionParser.new do |opts|
@@ -14,6 +15,10 @@ OptionParser.new do |opts|
 
   opts.on("-d", "--[no-]debug", "Run in debug mode") do |v|
     options[:debug] = v
+  end
+
+  opts.on("--exit-after-navigation", "Exit after navigation is complete.") do |v|
+    options[:exit_after_navigation] = v
   end
 end.parse!
 
@@ -42,7 +47,11 @@ class Tessellator::GtkClient
     textbox = Gtk::Entry.new
     textbox.placeholder_text = 'http://example.com'
     textbox.activates_default = true
-    textbox.observe(wv) {|wv| self.text = wv.location }
+    textbox.observe(wv) do |wv|
+      self.text = wv.location
+
+      exit if options[:exit_after_navigation]
+    end
 
     back_btn    = button('〈') { wv.go_back }
     #back_btn.observe(wv) {|wv| self.enabled = wv.can_go_back }
