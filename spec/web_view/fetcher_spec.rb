@@ -35,9 +35,5 @@ describe Tessellator::WebView::Fetcher do
       doc.headers['content-type'].must_equal 'text/html'
       doc.body.must_equal doc_source
     end
-
-    #it 'can fetch base64 encoded Data URIs' do
-    #  ...
-    #end
   end
 end
