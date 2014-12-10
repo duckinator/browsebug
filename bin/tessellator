@@ -54,7 +54,7 @@ class Tessellator::GtkClient
     end
 
     #back_btn    = button('〈') { wv.go_back }
-back_btn    = button('<') { wv.go_back }
+    back_btn    = button('<') { wv.go_back }
     #back_btn.observe(wv) {|wv| self.enabled = wv.can_go_back }
 
     #forward_btn = button('〉') { wv.go_forward }
