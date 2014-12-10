@@ -39,8 +39,8 @@ class Tessellator::GtkClient
     Gtk.init
 
     win  = Gtk::Window.new :toplevel
-    vbox = Gtk::VBox.new(false, 2)
-    hbox = Gtk::HBox.new(false, 2)
+    vbox = Gtk::Box.new(:vertical, 2)
+    hbox = Gtk::Box.new(:horizontal, 2)
 
     wv = Tessellator::WebView.new
 
