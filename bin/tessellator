@@ -53,14 +53,18 @@ class Tessellator::GtkClient
       exit if options[:exit_after_navigation]
     end
 
-    back_btn    = button('〈') { wv.go_back }
+    #back_btn    = button('〈') { wv.go_back }
+back_btn    = button('<') { wv.go_back }
     #back_btn.observe(wv) {|wv| self.enabled = wv.can_go_back }
 
-    forward_btn = button('〉') { wv.go_forward }
-    #back_btn.observe(wv) {|wv| self.enabled = wv.can_go_back }
+    #forward_btn = button('〉') { wv.go_forward }
+    forward_btn = button('>') { wv.go_forward }
+    #forward_btn.observe(wv) {|wv| self.enabled = wv.can_go_forward }
 
-    reload_btn  = button('↻') { wv.reload }
-    load_btn    = button('→') { wv.open(textbox.text) }
+    #reload_btn  = button('↻') { wv.reload }
+    reload_btn  = button('Reload') { wv.reload }
+    #load_btn    = button('→') { wv.open(textbox.text) }
+    load_btn    = button('Go') { wv.open(textbox.text) }
 
     image = Gtk::Image.new
     image.observe(wv) {|wv| self.surface = wv.surface }
