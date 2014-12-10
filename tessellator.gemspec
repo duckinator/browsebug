@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "pango", "~> 2.2.2"
   spec.add_runtime_dependency "nokogiri"
   spec.add_runtime_dependency "mime-types"
-  spec.add_runtime_dependency "spinny", "~> 0.7.0"
+  spec.add_runtime_dependency "spinny", "~> 0.8.3"
   spec.add_runtime_dependency "openssl-better_defaults", "~> 0.0.1"
 
   spec.add_runtime_dependency "gtk3",  "~> 2.2.2"
