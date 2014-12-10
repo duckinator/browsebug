@@ -21,7 +21,7 @@ class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :ele
 
     # Once stylesheets are being passed around, set the background *correctly*.
     # Also figure out where this should be actually set.
-    if element.name == 'head'
+    if element.name == 'body'
       context.set_source_color(:white)
       context.paint
     end
