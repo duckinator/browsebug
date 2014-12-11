@@ -58,7 +58,7 @@ class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :ele
     layout_width, layout_height = layout.pixel_size
 
     context.move_to(x, y + layout_height)
-    context.line_to(width, x + layout_height)
+    context.line_to(width, y + layout_height)
 
     context.stroke_preserve
     path = context.copy_path_flat
