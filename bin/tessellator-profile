@@ -1,0 +1,10 @@
+#!/bin/bash
+
+DIR=$(dirname $(readlink -f $0))
+
+type="$(echo $@ | sed 's/.*--profile=\(.*\)/\1/' | cut -d ' ' -f 1)"
+
+ruby -Ilib $DIR/tessellator "$@"
+
+stackprof stackprof-$type-tessellator.dump --text
+

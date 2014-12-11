@@ -20,6 +20,17 @@ OptionParser.new do |opts|
   opts.on("--exit-after-navigation", "Exit after navigation is complete.") do |v|
     options[:exit_after_navigation] = v
   end
+
+  opts.on("--exit-after=[seconds]", "Exit after the specified number of seconds.") do |v|
+    Thread.new do
+      sleep v.to_i
+      Gtk.main_quit
+    end
+  end
+
+  opts.on("--profile=[mode]", "Enable profiling using StackProf (mode=wall, cpu, object; default: cpu).") do |v|
+    options[:profile_mode] = v.downcase.to_sym
+  end
 end.parse!
 
 options[:url] = ARGV.delete_at(0) if ARGV.length == 1
@@ -104,6 +115,19 @@ class Tessellator::GtkClient
   end
 end
 
-Tessellator::GtkClient.new(options)
+def run!(options)
+  Tessellator::GtkClient.new(options)
 
-Gtk.main
+  Gtk.main
+end
+
+
+if options[:profile_mode]
+  require 'stackprof'
+
+  filename = "stackprof-#{options[:profile_mode].to_s}-tessellator.dump"
+  StackProf.run(mode: options[:profile_mode], out: filename) { run!(options) }
+else
+  run!(options)
+end
+
