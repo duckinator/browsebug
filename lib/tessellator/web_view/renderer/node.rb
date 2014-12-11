@@ -78,26 +78,28 @@ class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :ele
     context.fill_preserve
     context.stroke
 
-    {
-      x: x + (@block_element ? 0 : layout_width),
-      y: y + layout_height,
-    }
+    [
+      x + (@block_element ? 0 : layout_width),
+      y + layout_height,
+    ]
   end
 
   def render_at(x, y, width, height)
-    return if @display == 'none' # FIXME: See shenanigans in #__kludgebucket. (tessellator#4)
+    return [x, y] if @display == 'none' # FIXME: See shenanigans in #__kludgebucket. (tessellator#4)
 
     element.children.map do |el|
       case el
       when Nokogiri::XML::Text
-        render_text(el.inner_text, x, y, width, height)
+        x, y = render_text(el.inner_text, x, y, width, height)
       when Nokogiri::XML::Element
         render_element(el, x, y, width, height)
       end
 
       el.children.map do |el2|
-        render_element(el2, x, y, width, height)
+        x, y = render_element(el2, x, y, width, height)
       end
     end
+
+    [x, y]
   end
 end
