@@ -8,10 +8,16 @@ options = {
   url: 'about:welcome',
   debug: false,
   exit_after_navigation: false,
+  variance: 4,
 }
 
 OptionParser.new do |opts|
   opts.banner = "Usage: tessellator [options]"
+
+  opts.on("--variance=[VARIANCE]", "Variance of glitching.") do |v|
+    options[:variance] = v.to_i unless v == 'other'
+    options[:variance] ||= v
+  end
 
   opts.on("-d", "--[no-]debug", "Run in debug mode") do |v|
     options[:debug] = v
@@ -34,6 +40,9 @@ OptionParser.new do |opts|
 end.parse!
 
 options[:url] = ARGV.delete_at(0) if ARGV.length == 1
+
+# Because I'm too fucking lazy to weave this all the way into Float#+ cleanly.
+$VARIANCE = options[:variance]
 
 Tessellator.debug = options[:debug]
 

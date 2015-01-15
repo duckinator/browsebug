@@ -3,9 +3,10 @@ require 'tessellator/version'
 class Float
   alias :oldplus :+
   def +(other)
-    variance = 3
+    variance = $VARIANCE
+    variance = other if variance == 'other'
 
-    offset = rand(variance) + rand
+    offset = rand.oldplus(rand(variance))
     offset = rand(2) ? offset : -offset
 
     oldplus(other).oldplus(offset)
