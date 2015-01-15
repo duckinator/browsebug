@@ -13,6 +13,17 @@ class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :ele
     scary_kludgebucket
   end
 
+  def random_rgba(r: nil, g: nil, b: nil, a: nil)
+    rgba = Array.new(4) { rand }
+
+    # Override random values with the hard-coded rgba values.
+    rgba = [r, g, b, a].each_with_index.map{|x, i| x || rgba[i] }
+
+    debug rgba.inspect
+
+    rgba
+  end
+
   # FIXME: Resolve tessellator#4, and then replace Node#scary_kludgebucket.
   def scary_kludgebucket
     # Actually *get* the stylesheets, then fix these shenanigans.
@@ -22,7 +33,7 @@ class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :ele
     # Once stylesheets are being passed around, set the background *correctly*.
     # Also figure out where this should be actually set.
     if element.name == 'body'
-      context.set_source_color(:white)
+      context.set_source_color(random_rgba(a: 0.5))
       context.paint
     end
   end
@@ -74,8 +85,7 @@ class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :ele
 
     context.map_path_onto(path)
 
-    rgb = Array.new(3) { rand }
-    context.set_source_rgba([*rgb, 1])
+    context.set_source_rgba(random_rgba)
     context.fill_preserve
     context.stroke
 
