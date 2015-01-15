@@ -1,32 +1,26 @@
 require 'tessellator/version'
 
 class Float
-  alias :oldplus :+
-  def +(other)
-    variance = $VARIANCE
-    variance = other if variance == 'other'
+  def self.randomize_method(method_name)
+    original_method_name = "original_#{method_name.to_s}".to_sym
 
-    offset = rand.oldplus(rand(variance))
-    offset = rand(2) ? offset : -offset
+    alias_method original_method_name, method_name
 
-    offset = 0 if $VARIANCE == 0
+    define_method(method_name) do |other|
+      variance = $VARIANCE
+      variance = other if variance == 'other'
 
-    oldplus(other).oldplus(offset)
+      offset = rand.send(original_method_name, rand(variance))
+      offset = rand(2) ? offset : -offset
+
+      offset = 0 if $VARIANCE == 0
+
+      send(original_method_name, other).send(original_method_name, offset)
+    end
   end
 
-  alias :oldminus :-
-  def -(other)
-    variance = $VARIANCE
-    variance = other if variance == 'other'
-
-    offset = rand.oldminus(rand(variance))
-    offset = rand(2) ? offset : -offset
-
-    offset = 0 if $VARIANCE == 0
-
-    oldminus(other).oldminus(offset)
-  end
-
+  randomize_method(:+)
+  randomize_method(:-)
 end
 
 module Tessellator
