@@ -2,26 +2,58 @@ require 'tessellator/debug'
 require 'cairo'
 require 'pango'
 
-class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :element, :stylesheets, :x, :y, :width, :height)
+class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :element, :stylesheets, :x, :y, :width, :height, :background_rgb)
   include Tessellator::Debug
 
   def initialize(surface, context, element, stylesheets,
-                 x=0, y=0, width=surface.width, height=surface.height)
+                 x=0, y=0, width=surface.width, height=surface.height,
+                 background_rgb=random_rgb)
 
-    super(surface, context, element, stylesheets, x, y, width, height)
+    super(surface, context, element, stylesheets, x, y, width, height, background_rgb)
 
     scary_kludgebucket
   end
 
-  def random_rgba(r: nil, g: nil, b: nil, a: nil)
-    rgba = Array.new(4) { rand }
+  def luminance(rgb)
+    r, g, b = rgb
 
-    # Override random values with the hard-coded rgba values.
-    rgba = [r, g, b, a].each_with_index.map{|x, i| x || rgba[i] }
+    # From http://stackoverflow.com/questions/596216/formula-to-determine-brightness-of-rgb-color
+    (0.299 * r + 0.587 * g + 0.114 * b)
+  end
 
-    debug rgba.inspect
+  def color_difference(a, b)
+    a, b = a.map(&:to_f), b.map(&:to_f)
 
-    rgba
+    a.zip(b).map{|l, r| [l, r].max - [l,r].min}.reduce(:+)
+  end
+
+  # I couldn't figure out the appropriate value from http://www.w3.org/TR/WCAG20/#contrast-ratiodef
+  # So I went with 1.0 because it resulted in pretty colors.
+  def good_foreground?(rgb)
+    diff = color_difference(background_rgb, rgb)
+
+    debug diff.inspect
+
+    diff > 1.0
+  end
+
+  def random_rgb
+    rgb = Array.new(3) { rand }
+
+    debug rgb.inspect
+
+    rgb
+  end
+
+  def random_foreground
+    rgb = nil
+
+    loop do
+      rgb = random_rgb
+      break if good_foreground?(rgb)
+    end
+
+    rgb
   end
 
   # FIXME: Resolve tessellator#4, and then replace Node#scary_kludgebucket.
@@ -33,7 +65,7 @@ class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :ele
     # Once stylesheets are being passed around, set the background *correctly*.
     # Also figure out where this should be actually set.
     if element.name == 'body'
-      context.set_source_color(random_rgba(a: 0.5))
+      context.set_source_color(background_rgb)
       context.paint
     end
   end
@@ -44,7 +76,7 @@ class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :ele
   end
 
   def render_element(el, x, y, width, height)
-    self.class.new(surface, context, el, stylesheets, x, y, width, height).render!
+    self.class.new(surface, context, el, stylesheets, x, y, width, height, background_rgb).render!
   end
 
 
@@ -85,7 +117,7 @@ class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :ele
 
     context.map_path_onto(path)
 
-    context.set_source_rgba(random_rgba)
+    context.set_source_rgba(random_foreground)
     context.fill_preserve
     context.stroke
 
