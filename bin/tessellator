@@ -5,7 +5,7 @@ require 'gtk3'
 require 'optparse'
 
 options = {
-  url: 'about:version',
+  url: 'about:welcome',
   debug: false,
   exit_after_navigation: false,
 }
