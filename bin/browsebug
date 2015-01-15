@@ -9,14 +9,35 @@ options = {
   debug: false,
   exit_after_navigation: false,
   variance: 4,
+  add_variance: nil,
+  sub_variance: nil,
+  addsub_variance: nil,
 }
 
 OptionParser.new do |opts|
   opts.banner = "Usage: tessellator [options]"
 
-  opts.on("--variance=[VARIANCE]", "Variance of glitching.") do |v|
+  opts.on("--variance=[VARIANCE]", "Variance of glitching (default: #{options[:variance]}).") do |v|
     options[:variance] = v.to_i unless v == 'other'
     options[:variance] ||= v
+  end
+
+  opts.on("--addsub-variance=[ADDSUB_VARIANCE]", "Variance of glitching for addition or subtraction (default: same as VARIANCE).") do |v|
+    if v == 'other'
+      options[:add_variance] = options[:sub_variance] = v
+    else
+      options[:add_variance] = options[:sub_variance] = v.to_i
+    end
+  end
+
+  opts.on("--add-variance=[ADD_VARIANCE]", "Variance of glitching for addition (default: same as ADDSUB_VARIANCE).") do |v|
+    options[:add_variance] = v.to_i unless v == 'other'
+    options[:add_variance] ||= v
+  end
+
+  opts.on("--sub-variance=[SUB_VARIANCE]", "Variance of glitching for subtraction (default: same as ADDSUB_VARIANCE).") do |v|
+    options[:sub_variance] = v.to_i unless v == 'other'
+    options[:sub_variance] ||= v
   end
 
   opts.on("-d", "--[no-]debug", "Run in debug mode") do |v|
@@ -43,6 +64,9 @@ options[:url] = ARGV.delete_at(0) if ARGV.length == 1
 
 # Because I'm too fucking lazy to weave this all the way into Float#+ cleanly.
 $VARIANCE = options[:variance]
+$OPTIONS  = options.dup
+
+require 'tessellator/glitch-float'
 
 Tessellator.debug = options[:debug]
 
