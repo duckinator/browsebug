@@ -24,7 +24,9 @@ TODO: Write usage instructions here
 
 ## Screenshots
 
-![Screenshot](https://gitlab.com/duckinator/tessellator/raw/main/assets/screenshot.png)
+![Screenshot 1](https://gitlab.com/duckinator/tessellator/raw/main/assets/screenshot1.png)
+
+![Screenshot 2](https://gitlab.com/duckinator/tessellator/raw/main/assets/screenshot2.png)
 
 ## Contributing
 
