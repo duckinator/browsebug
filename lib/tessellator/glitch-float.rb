@@ -9,7 +9,7 @@ class Float
     define_method(method_name) do |other|
       variance = _variance
       variance = $OPTIONS[:variance] if variance == 'variance'
-      variance = other      if variance == 'other'
+      variance = other if variance == 'other'
 
       return send(original_method_name, other) if variance == 0
 
