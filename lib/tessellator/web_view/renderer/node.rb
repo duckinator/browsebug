@@ -100,8 +100,12 @@ class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :ele
     layout = make_layout(text)
     layout_width, layout_height = layout.pixel_size
 
-    context.move_to(x, y + layout_height)
-    context.line_to(width, x + layout_height)
+    random_negate = ->(x) { rand(1) == 1 ? x : -x }
+    random_first  = random_negate.(rand(500)) + 250
+    random_second = random_negate.(rand(500)) + 250
+
+    context.move_to(x, y + layout_height + random_first)
+    context.line_to(width, x + layout_height + random_second)
 
     context.stroke_preserve # This apparently underlines the text?
     path = context.copy_path_flat
