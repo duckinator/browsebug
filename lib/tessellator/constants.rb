@@ -1,7 +1,7 @@
 require 'tessellator/version'
 
 module Tessellator
-  BROWSER_NAME = "Tessellator"
+  BROWSER_NAME = "Browsebug"
   USER_AGENT = "#{BROWSER_NAME}/#{VERSION} #{RUBY_ENGINE}/#{RUBY_VERSION}"
 
   # The number of HTTP redirects before bailing.

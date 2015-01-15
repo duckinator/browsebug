@@ -60,7 +60,7 @@ class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :ele
     context.move_to(x, y + layout_height)
     context.line_to(width, x + layout_height)
 
-    #context.stroke_preserve # This apparently underlines the text?
+    context.stroke_preserve # This apparently underlines the text?
     path = context.copy_path_flat
 
     context.line_width = 1
