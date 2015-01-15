@@ -85,7 +85,11 @@ class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :ele
 
     layout = context.create_pango_layout
     layout.text = text
-    layout.font_description = Pango::FontDescription.new("Serif 20")
+
+    serif_or_sans = rand(2).zero? ? 'Sans Serif' : 'Serif'
+    font_size     = rand(30) + 10
+
+    layout.font_description = Pango::FontDescription.new("#{serif_or_sans} #{font_size}")
     context.update_pango_layout(layout)
 
     #p layout.methods
