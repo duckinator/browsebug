@@ -2,6 +2,7 @@ require 'tessellator/version'
 require 'tessellator/debug'
 require 'mayhaps'
 require 'mime-types'
+require 'nokogiri'
 require 'pp'
 
 class Tessellator::WebView::Parser

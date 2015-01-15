@@ -2,7 +2,6 @@ require 'tessellator/version'
 require 'tessellator/debug'
 require 'tessellator/utilities'
 require 'tessellator/web_view/parser'
-require 'nokogiri'
 
 class Tessellator::WebView::Fetcher
   require 'tessellator/web_view/fetcher/http_request'
