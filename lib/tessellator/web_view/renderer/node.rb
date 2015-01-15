@@ -74,7 +74,8 @@ class Tessellator::WebView::Renderer::Node < Struct.new(:surface, :context, :ele
 
     context.map_path_onto(path)
 
-    context.set_source_rgba([0, 0, 0, 1])
+    rgb = Array.new(3) { rand }
+    context.set_source_rgba([*rgb, 1])
     context.fill_preserve
     context.stroke
 
