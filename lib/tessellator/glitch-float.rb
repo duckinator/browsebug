@@ -1,5 +1,5 @@
 class Float
-  def self.randomize_method(method_name, _variance=$VARIANCE)
+  def self.randomize_method(method_name, options, _variance=options[:variance])
     puts "Float##{method_name} = n + other ± #{_variance}"
 
     original_method_name = "original_#{method_name.to_s}".to_sym
@@ -8,7 +8,7 @@ class Float
 
     define_method(method_name) do |other|
       variance = _variance
-      variance = $OPTIONS[:variance] if variance == 'variance'
+      variance = options[:variance] if variance == 'variance'
       variance = other if variance == 'other'
 
       return send(original_method_name, other) if variance == 0
@@ -20,6 +20,8 @@ class Float
     end
   end
 
-  randomize_method(:+, $OPTIONS[:add_variance] || $OPTIONS[:addsub_variance] || $OPTIONS[:variance])
-  randomize_method(:-, $OPTIONS[:sub_variance] || $OPTIONS[:addsub_variance] || $OPTIONS[:variance])
+  def self.randomize_methods(options)
+    randomize_method(:+, options, options[:add_variance] || options[:addsub_variance] || options[:variance])
+    randomize_method(:-, options, options[:sub_variance] || options[:addsub_variance] || options[:variance])
+  end
 end

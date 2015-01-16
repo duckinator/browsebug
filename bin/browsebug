@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'tessellator'
+require 'tessellator/glitch-float'
 require 'gtk3'
 require 'optparse'
 
@@ -62,11 +63,7 @@ end.parse!
 
 options[:url] = ARGV.delete_at(0) if ARGV.length == 1
 
-# Because I'm too fucking lazy to weave this all the way into Float#+ cleanly.
-$VARIANCE = options[:variance]
-$OPTIONS  = options.dup
-
-require 'tessellator/glitch-float'
+Float.randomize_methods(options)
 
 Tessellator.debug = options[:debug]
 
