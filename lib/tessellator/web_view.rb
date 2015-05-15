@@ -73,6 +73,15 @@ class Tessellator::WebView
     notify_observers(self)
   end
 
+  def render!
+    set_title @parsed.title
+
+    renderer = Renderer.new(surface)
+    renderer.add_observer(self)
+
+    renderer.render(@parsed)
+  end
+
   private
   def render_page(method, url, parameters=default)
     if url.nil?
@@ -80,17 +89,12 @@ class Tessellator::WebView
       return
     end
 
-    response = Fetcher.fetch(method, url, parameters)
-    @location = response.url
+    @response = Fetcher.fetch(method, url, parameters)
+    @location = @response.url
 
-    parsed   = Parser.parse(method, url, parameters, response)
+    @parsed   = Parser.parse(method, url, parameters, @response)
 
-    set_title parsed.title
-
-    renderer = Renderer.new(surface)
-    renderer.add_observer(self)
-
-    renderer.render(parsed)
+    render!
   end
 end
 
