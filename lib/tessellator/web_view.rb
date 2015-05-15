@@ -21,6 +21,11 @@ class Tessellator::WebView
     @surface = Cairo::ImageSurface.new(width, height)
   end
 
+  def resize(width, height)
+    @surface = Cairo::ImageSurface.new(width, height)
+    render!
+  end
+
   def set_title(title)
     @title = Tessellator::BROWSER_NAME
     @title = "#{title} — #{@title}" if title
