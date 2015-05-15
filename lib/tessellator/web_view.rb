@@ -38,7 +38,7 @@ class Tessellator::WebView
   end
 
   def reload
-    render_page(@location)
+    render_page(@method, @location)
   end
 
   def can_go_back
