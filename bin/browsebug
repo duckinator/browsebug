@@ -95,10 +95,10 @@ class Tessellator::GtkClient
     end
 
     back_btn    = button('Back') { wv.go_back }
-    #back_btn.observe(wv) {|wv| self.enabled = wv.can_go_back }
+    back_btn.observe(wv) {|wv| self.sensitive = wv.can_go_back }
 
     forward_btn = button('Forward') { wv.go_forward }
-    #forward_btn.observe(wv) {|wv| self.enabled = wv.can_go_forward }
+    forward_btn.observe(wv) {|wv| self.sensitive = wv.can_go_forward }
 
     reload_btn  = button('Reload') { wv.reload }
     load_btn    = button('Go') { wv.open(textbox.text) }
