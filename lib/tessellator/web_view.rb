@@ -14,7 +14,7 @@ class Tessellator::WebView
 
   def initialize(width=500, height=500)
     @history = []
-    @history_index = 0
+    @history_index = -1
 
     title = nil
 
@@ -35,7 +35,7 @@ class Tessellator::WebView
     @history_index += 1
 
     # Append url to @history and truncate.
-    @history[@history_index..-1] = [url]
+    @history = history[0..@history_index] + [url]
 
     @location = url
 
@@ -51,7 +51,7 @@ class Tessellator::WebView
   end
 
   def can_go_forward
-    @history_index < @history.length
+    (@history_index + 1) < @history.length
   end
 
   def go(offset)
