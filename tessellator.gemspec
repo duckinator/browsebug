@@ -4,12 +4,11 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'tessellator/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "tessellator"
+  spec.name          = "browsebug"
   spec.version       = Tessellator::VERSION
-  spec.authors       = ["Marie Markwell"]
-  spec.email         = ["me@marie.so"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
+  spec.authors       = ["Ellen Dash"]
+  spec.email         = ["me@duckie.co"]
+  spec.summary       = %q{browser glitch engine}
   spec.homepage      = ""
   spec.license       = "MIT"
 
